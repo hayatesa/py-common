@@ -1,0 +1,78 @@
+version: &version 1.0.0.0330_base
+profile: local
+server:
+  static_folder: templates
+  context_path: /api
+  cors:
+    allow: true
+    origins: '*'
+    path: /api/*
+sqlalchemy:
+  SQLALCHEMY_DATABASE_URI: mysql://dev:dev@119.29.94.246:3306/zone_cloud?charset=utf8
+  SQLALCHEMY_TRACK_MODIFICATIONS: true
+  SQLALCHEMY_ECHO: true
+#  SQLALCHEMY_POOL_SIZE: 50
+#  SQLALCHEMY_POOL_TIMEOUT: 20
+#  SQLALCHEMY_RECORD_QUERIES:
+#  SQLALCHEMY_NATIVE_UNICODE:
+#  SQLALCHEMY_POOL_RECYCLE:
+#  SQLALCHEMY_MAX_OVERFLOW:
+jwt:
+  header_key: Authorization
+  secret_key: ft@4&iP!_  # Token密钥
+  ttl: 86400  # Token有效期(单位: 秒)
+  algorithm: HS256  # Token加密算法
+  token_prefix: ''  # Token前缀
+swagger:
+  title: API
+  swagger_ui: true  # 是否开启Swagger
+  headers:  []  # Inject headers after request, key: value
+  specs:
+    -
+      endpoint: api
+      route: /api.json
+  specs_route: /docs
+  info:
+    description: API Documents
+    contact:
+      email: hayatesa@live.cn
+      url: &link https://github.com/hayatesa
+    termsOfService: *link # Just a link
+    version: *version
+  uiversion: 3  # [2|3]
+
+log: # See https://docs.python.org/3/library/logging.config.html
+  handlers:
+    console:
+      class: logging.StreamHandler
+      formatter: brief
+      level: 10
+    file:
+      class: logging.handlers.RotatingFileHandler
+      formatter: precise
+      filename: app.log
+      maxBytes: 1048576
+      backupCount: 3
+      level: 10
+  formatters:
+    brief:
+      format: '%(asctime)s %(levelname)s %(filename)s[%(lineno)d] %(funcName)s: %(message)s'
+      datefmt: '%H:%M:%S'
+    precise:
+      format: '%(asctime)s %(levelname )s %(filename)s[%(lineno)d] %(funcName)s: %(message)s'
+      datefmt: '%Y-%m-%d %H:%M:%S'
+  loggers:
+    app:
+      propagate: false
+      handlers:
+        - console
+        - file
+      level: 10
+  disable_existing_loggers: true
+  version: 1  # 默认且只能为1
+
+redis:
+  host: 119.29.94.246
+  port: 6379
+  decode_responses: true # 解码为字符串
+  password: redis272243
