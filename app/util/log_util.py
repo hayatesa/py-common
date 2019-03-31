@@ -5,7 +5,7 @@ import logging
 class Logger:
 
     def __init__(self):
-        self.logger = logging.getLogger('auth_app')
+        self.logger = logging.getLogger('app')
 
     def debug(self, msg=''):
         self.logger.debug(msg)

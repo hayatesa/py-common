@@ -1,6 +1,6 @@
 import redis
 
-from auth_app.exception import InternalException
+from app.exception import InternalException
 
 
 class RedisUtil:

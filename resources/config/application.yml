@@ -59,7 +59,7 @@ log: # See https://docs.python.org/3/library/logging.config.html
       format: '%(asctime)s %(levelname)s %(filename)s[%(lineno)d] %(funcName)s: %(message)s'
       datefmt: '%H:%M:%S'
     precise:
-      format: '%(asctime)s %(levelname )s %(filename)s[%(lineno)d] %(funcName)s: %(message)s'
+      format: '%(asctime)s %(levelname)s %(filename)s[%(lineno)d] %(funcName)s: %(message)s'
       datefmt: '%Y-%m-%d %H:%M:%S'
   loggers:
     app:

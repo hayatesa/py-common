@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from auth_app import db
+from app import db
 
 
 class BaseDAO:

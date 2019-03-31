@@ -3,9 +3,9 @@ import datetime
 
 from werkzeug.security import check_password_hash
 
-from auth_app.exception import BusinessException
-from auth_app.util.redis_util import redis_util
-from auth_app.service import user_srv
+from app.exception import BusinessException
+from app.util.redis_util import redis_util
+from app.service import user_srv
 
 
 def login(username, token):

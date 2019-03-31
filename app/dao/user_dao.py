@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from auth_app.entity.user import User
-from auth_app.dao.base_dao import BaseDAO
+from app.entity.user import User
+from app.dao.base_dao import BaseDAO
 
 
 class UserDao(BaseDAO):

@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
 from flask import request, abort
-from auth_app import app, APPLICATION_CONFIG
-from auth_app.util.resp import failure
-from auth_app.exception import AuthenticationException, AuthorizationError, BusinessException, InternalException
-from auth_app.util import jwt_util
-from auth_app.service.authentication_srv import verify_password as verify_pwd
+from app import app, APPLICATION_CONFIG
+from app.util.resp import failure
+from app.exception import AuthenticationException, AuthorizationError, BusinessException, InternalException
+from app.util import jwt_util
+from app.service.authentication_srv import verify_password as verify_pwd
 
 basic_auth = HTTPBasicAuth()
 token_auth = HTTPTokenAuth()

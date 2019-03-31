@@ -66,7 +66,7 @@ def _create_logger():
         return logging.getLogger()
     log_conf['version'] = log_conf.get('version', 1)
     logging.config.dictConfig(log_conf)
-    _app_logger = logging.getLogger('auth_app')
+    _app_logger = logging.getLogger('app')
     return _app_logger
 
 
@@ -103,7 +103,7 @@ def __init_cors__(flask_app):
 
 
 def _assemble_blueprint(flask_app):
-    from auth_app.api.auth import auth_bp
+    from app.api.auth import auth_bp
     flask_app.register_blueprint(auth_bp)
 
 

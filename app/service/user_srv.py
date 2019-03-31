@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from uuid import uuid1
-from auth_app.dao.user_dao import user_dao
-from auth_app.service import session_commit
+from app.dao.user_dao import user_dao
+from app.service import session_commit
 
 
 def find_list():

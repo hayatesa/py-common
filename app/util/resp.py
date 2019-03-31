@@ -1,6 +1,6 @@
-from auth_app.util.json_util import to_json
+from app.util.json_util import to_json
 from flask import Response
-import auth_app.constant as constant
+import app.constant as constant
 
 MIME_TYPE = 'application/json;charset=utf-8'
 DEFAULT_MESSAGE = ''

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from sqlalchemy.exc import SQLAlchemyError
-from auth_app import db
+from app import db
 
 
 def session_commit():

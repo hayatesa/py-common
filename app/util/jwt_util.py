@@ -2,8 +2,8 @@
 import jwt
 import datetime
 import time
-from auth_app import APPLICATION_CONFIG
-from auth_app.exception import InternalException
+from app import APPLICATION_CONFIG
+from app.exception import InternalException
 
 SECRET_KEY = APPLICATION_CONFIG.get('secret_key', '')
 TTL = APPLICATION_CONFIG['jwt'].get('ttl', 1800)
@@ -35,7 +35,7 @@ def decode_auth_token(auth_token):
     :return: dict
     """
     token = extract(auth_token)
-    # payload = jwt.decode(auth_token, auth_app.config.get('SECRET_KEY'), leeway=datetime.timedelta(seconds=10))
+    # payload = jwt.decode(auth_token, app.config.get('SECRET_KEY'), leeway=datetime.timedelta(seconds=10))
     # 取消过期时间验证
     try:
         payload = jwt.decode(token, SECRET_KEY, options={'verify_exp': False})

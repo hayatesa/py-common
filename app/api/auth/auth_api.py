@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from flask import request
-from auth_app.service import user_srv
-from auth_app.util.resp import success
-from auth_app.util import jwt_util
-from auth_app.api import basic_auth
-from auth_app.api.auth import auth_bp as api
+from app.service import user_srv
+from app.util.resp import success
+from app.util import jwt_util
+from app.api import basic_auth
+from app.api.auth import auth_bp as api
 
 
 @api.route('/token', methods=['POST'])
