@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-# -*-coding:utf-8 -*-
-from app import app
+# -*- coding: utf-8 -*-
+from auth_app import app
 
 
 if __name__ == '__main__':

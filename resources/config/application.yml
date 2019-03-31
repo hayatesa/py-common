@@ -50,7 +50,7 @@ log: # See https://docs.python.org/3/library/logging.config.html
     file:
       class: logging.handlers.RotatingFileHandler
       formatter: precise
-      filename: app.log
+      filename: auth_app.log
       maxBytes: 1048576
       backupCount: 3
       level: 10
