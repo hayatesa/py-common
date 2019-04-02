@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from app.entity.user import User
-from app.dao.base_dao import BaseDAO
+from app.dao.base_dao import BaseDao
 
 
-class UserDao(BaseDAO):
+class UserDao(BaseDao):
 
     def __init__(self):
         super().__init__(User)
@@ -13,4 +13,4 @@ class UserDao(BaseDAO):
 
 
 user_dao = UserDao()
-del UserDao  # 单例模式，删除构函数
+del UserDao  # 单例模式，删除构造函数

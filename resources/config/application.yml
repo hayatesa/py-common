@@ -22,7 +22,8 @@ jwt:
   secret_key: ft@4&iP!_  # Token密钥
   ttl: 86400  # Token有效期(单位: 秒)
   algorithm: HS256  # Token加密算法
-  token_prefix: ''  # Token前缀
+  token_prefix: 'Bearer'  # Token前缀
+  iss: 'dev'
 swagger:
   title: API
   swagger_ui: true  # 是否开启Swagger

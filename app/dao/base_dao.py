@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+"""基础DA
+"""
 from app import db
 
 
-class BaseDAO:
+class BaseDao:
 
     def __init__(self, mapper):
         self.__mapper = mapper

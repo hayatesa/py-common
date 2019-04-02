@@ -4,6 +4,7 @@ from app.service import user_srv
 from app.util.resp import success
 from app.util import jwt_util
 from app.api import basic_auth
+from app.api import token_auth
 from app.api.auth import auth_bp as api
 
 
@@ -16,6 +17,6 @@ def token():
 
 
 @api.route('/logout', methods=['POST'])
+@token_auth.login_required
 def logout():
     return success()
-

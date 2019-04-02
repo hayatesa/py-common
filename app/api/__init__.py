@@ -6,6 +6,7 @@ from app.util.resp import failure
 from app.exception import AuthenticationException, AuthorizationError, BusinessException, InternalException
 from app.util import jwt_util
 from app.service.authentication_srv import verify_password as verify_pwd
+from app import constant
 
 basic_auth = HTTPBasicAuth()
 token_auth = HTTPTokenAuth()
@@ -36,13 +37,13 @@ def verify_password(username, password):
 @token_auth.verify_token
 def verify_token(token):
     if not token:
-        abort(401, **{'description': '令牌缺失'})
+        raise AuthenticationException(message='令牌缺失', status=constant.BLANK_TOKEN)
 
     payload = jwt_util.decode_auth_token(token)
     if not jwt_util.is_valid_token(payload):
-        raise BusinessException('令牌无效')
+        raise AuthenticationException(message='令牌无效', status=constant.INVALID_TOKEN)
     if jwt_util.is_token_expired(payload['exp']):
-        abort(401, **{'description': '令牌过期'})
+        raise AuthenticationException(message='令牌过期', status=constant.EXPIRED_TOKEN)
     return True
 
 
@@ -79,7 +80,7 @@ def internal_server_error(error):
 
 @app.errorhandler(AuthenticationException)
 def authentication_exception_handler(e):
-    return failure(message=e.message, http_status_code=401)
+    return failure(message=e.message, status=e.status, http_status_code=401)
 
 
 @app.errorhandler(AuthorizationError)
@@ -94,7 +95,7 @@ def business_exception_handler(e):
 
 @app.errorhandler(InternalException)
 def internal_exception_handler():
-    return failure(message='Internal Error.', http_status_code=500)
+    return failure(message='Internal Server Error.', http_status_code=500)
 
 
 @app.errorhandler(Exception)

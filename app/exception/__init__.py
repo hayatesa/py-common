@@ -4,8 +4,9 @@
 
 class AuthenticationException(Exception):
 
-    def __init__(self, message=''):
+    def __init__(self, message='', status=None):
         self.message = message
+        self.status = status
 
 
 class AuthorizationError(Exception):

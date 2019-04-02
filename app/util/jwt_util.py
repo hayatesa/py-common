@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
+"""JWT工具"""
 import jwt
 import datetime
 import time
 from app import APPLICATION_CONFIG
 from app.exception import InternalException
 
+# 获取JWT配置
 SECRET_KEY = APPLICATION_CONFIG.get('secret_key', '')
 TTL = APPLICATION_CONFIG['jwt'].get('ttl', 1800)
 ALGORITHM = APPLICATION_CONFIG.get('algorithm', 'HS256')
-TOKEN_PREFIX = ('%s ' % APPLICATION_CONFIG['jwt'].get('token_prefix')) if APPLICATION_CONFIG['jwt'].get('token_prefix') else ''
+TOKEN_PREFIX = '%s ' % APPLICATION_CONFIG if APPLICATION_CONFIG['jwt'].get('scheme') else ''
+ISS = '%s ' % APPLICATION_CONFIG['jwt'].get('iss', '')
 
 
 def encode_auth_token(user_id, username):
@@ -19,7 +22,7 @@ def encode_auth_token(user_id, username):
     payload = {
         'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=TTL),
         'iat': datetime.datetime.utcnow(),
-        'iss': 'dev',
+        'iss': ISS,
         'data': {
             'id': user_id,
             'username': username
