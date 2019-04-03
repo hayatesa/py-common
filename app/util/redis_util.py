@@ -1,6 +1,7 @@
 import redis
 
 from app.exception import InternalException
+from app import APPLICATION_CONFIG
 
 
 class RedisUtil:
@@ -11,8 +12,24 @@ class RedisUtil:
     """
 
     def __init__(self):
-        pool = redis.ConnectionPool(host='119.29.94.246', port=6379, decode_responses=True,
-                                    password='redis272243')
+        redis_config = APPLICATION_CONFIG.get('redis')
+        if not redis_config:
+            return
+        if not redis_config.get('active'):
+            return
+        if not redis_config:
+            raise InternalException(message="未找到redis配置")
+        host = redis_config.get('host')
+        if not host:
+            raise InternalException(message="未找到redis.host配置")
+        port = redis_config.get('port', 6379)
+        if not host:
+            raise InternalException(message="未找到redis.port配置")
+        password = redis_config.get('password')
+        if not password:
+            raise InternalException(message="未找到redis.password配置")
+        decode_responses = redis_config.get('decode_responses', False)
+        pool = redis.ConnectionPool(host=host, port=port, decode_responses=decode_responses, password=password)
         self.client = redis.Redis(connection_pool=pool)
 
     def get_redis(self):

@@ -10,7 +10,8 @@ from app.exception import InternalException
 SECRET_KEY = APPLICATION_CONFIG.get('secret_key', '')
 TTL = APPLICATION_CONFIG['jwt'].get('ttl', 1800)
 ALGORITHM = APPLICATION_CONFIG.get('algorithm', 'HS256')
-TOKEN_PREFIX = '%s ' % APPLICATION_CONFIG if APPLICATION_CONFIG['jwt'].get('scheme') else ''
+_PREFIX = APPLICATION_CONFIG['jwt'].get('token_prefix')
+TOKEN_PREFIX = '%s ' % _PREFIX if _PREFIX else ''
 ISS = '%s ' % APPLICATION_CONFIG['jwt'].get('iss', '')
 
 
@@ -59,7 +60,7 @@ def extract(token_in_header):
     if not TOKEN_PREFIX:
         return token_in_header
     if token_in_header.find(TOKEN_PREFIX) != 0:
-        return token_in_header
+        raise InternalException("Invalid prefix.")
 
     if not token_in_header.strip():
         raise InternalException('Authorization header cannot be blank.')

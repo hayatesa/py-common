@@ -22,6 +22,13 @@ class BusinessException(Exception):
         self.status = status
 
 
+class ParameterException(Exception):
+
+    def __init__(self, message='', status=None):
+        self.message = message
+        self.status = status
+
+
 class InternalException(Exception):
 
     def __init__(self, message=''):
