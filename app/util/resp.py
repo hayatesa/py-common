@@ -24,19 +24,16 @@ class Resp:
         return resp
 
     @classmethod
-    def error(cls, status=constant.INTERNAL_ERROR, code=None, description=None, fields=None):
+    def error(cls, status=constant.INTERNAL_ERROR, description=None, fields=None):
         """请求失败结果
 
         :param status: 错误状态码
-        :param code: 错误代码，建议使用下划线分隔的全部字母为大写的英文
         :param description: 用户可读的错误消息
         :param fields: 字段描述，通常用于描述请求参数的错误
         """
         resp = cls()
         _error = cls()
         _error.status = status
-        if code:
-            _error.code = code
         if description:
             _error.description = description
         if fields:
@@ -57,17 +54,15 @@ def success(message=constant.SUCCESS_MESSAGE, data=None):
     return Response(Resp.success(message=message, data=data).to_json(), mimetype=MIME_TYPE)
 
 
-def error(status=None, code=constant.INTERNAL_ERROR, description=None, fields=None,
+def error(status=None, description=None, fields=None,
           http_status=constant.INTERNAL_ERROR):
     """请求失败结果
 
     :param status: 错误状态码
-    :param code: 错误代码，建议使用下划线分隔的全部字母为大写的英文
     :param description: 用户可读的错误消息
     :param fields: 字段描述，通常用于描述请求参数的错误
     :param http_status: http状态码
     """
-    resp = Response(Resp.error(status=status, code=code, description=description, fields=fields).to_json(),
-                    mimetype=MIME_TYPE)
+    resp = Response(Resp.error(status=status, description=description, fields=fields).to_json(), mimetype=MIME_TYPE)
     resp.status_code = http_status
     return resp

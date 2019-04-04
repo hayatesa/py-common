@@ -3,7 +3,7 @@
 # 数据错误
 BAD_REQUEST = 400  # 请求信息不完整或无法解析。
 INVALID_REQUEST = 422  # 请求信息完整，但无效。
-NOT_FOUND = 404  # 资源不存在。
+RESOURCE_NOT_FOUND = 404  # 资源不存在。
 RESOURCE_CONFLICT = 409  # 资源冲突。
 
 # 鉴权错误

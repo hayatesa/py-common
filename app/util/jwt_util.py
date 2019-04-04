@@ -4,7 +4,7 @@ import jwt
 import datetime
 import time
 from app import APPLICATION_CONFIG
-from app.exception import InternalException
+from app.exception import InternalError
 
 # 获取JWT配置
 SECRET_KEY = APPLICATION_CONFIG.get('secret_key', '')
@@ -44,12 +44,8 @@ def decode_auth_token(auth_token):
     try:
         payload = jwt.decode(token, SECRET_KEY, options={'verify_exp': False})
     except Exception:
-        raise InternalException('Token解析失败')
+        raise InternalError('Token解析失败')
     return payload
-
-
-def is_valid_token(payload):
-    return 'data' in payload and 'id' in payload['data'] and 'username' in payload['data']
 
 
 def is_token_expired(expiration):
@@ -60,13 +56,13 @@ def extract(token_in_header):
     if not TOKEN_PREFIX:
         return token_in_header
     if token_in_header.find(TOKEN_PREFIX) != 0:
-        raise InternalException("Invalid prefix.")
+        raise InternalError("Invalid prefix.")
 
     if not token_in_header.strip():
-        raise InternalException('Authorization header cannot be blank.')
+        raise InternalError('Authorization header cannot be blank.')
 
     if len(token_in_header) < len(TOKEN_PREFIX):
-        raise InternalException('Invalid authorization header size.')
+        raise InternalError('Invalid authorization header size.')
 
     return token_in_header[len(TOKEN_PREFIX):]
 

@@ -1,6 +1,6 @@
 import redis
 
-from app.exception import InternalException
+from app.exception import InternalError
 from app import APPLICATION_CONFIG
 
 
@@ -18,16 +18,16 @@ class RedisUtil:
         if not redis_config.get('active'):
             return
         if not redis_config:
-            raise InternalException(message="未找到redis配置")
+            raise InternalError(description="未找到redis配置")
         host = redis_config.get('host')
         if not host:
-            raise InternalException(message="未找到redis.host配置")
+            raise InternalError(description="未找到redis.host配置")
         port = redis_config.get('port', 6379)
         if not host:
-            raise InternalException(message="未找到redis.port配置")
+            raise InternalError(description="未找到redis.port配置")
         password = redis_config.get('password')
         if not password:
-            raise InternalException(message="未找到redis.password配置")
+            raise InternalError(description="未找到redis.password配置")
         decode_responses = redis_config.get('decode_responses', False)
         pool = redis.ConnectionPool(host=host, port=port, decode_responses=decode_responses, password=password)
         self.client = redis.Redis(connection_pool=pool)
@@ -35,12 +35,12 @@ class RedisUtil:
     def get_redis(self):
         return self.client
 
-    def publish(self, channel, message):
+    def publish(self, channel, description):
         if not channel:
-            raise InternalException(message='channel should not be None')
+            raise InternalError(description='channel should not be None')
         if not channel:
-            raise InternalException(message='message should not be None')
-        self.client.publish(channel, message)
+            raise InternalError(description='description should not be None')
+        self.client.publish(channel, description)
 
     def subscribe(self, channel):
         pub = self.client.pubsub()

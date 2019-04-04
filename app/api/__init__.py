@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
+"""API全局控制"""
 import traceback
 
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
 from flask import request
 from app import app, APPLICATION_CONFIG
-from app.exception import AuthenticationException, AuthorizationException, BusinessException, InternalException, \
-    ParameterException
+from app.exception import AuthenticationError, AuthorizationError, BusinessError, InternalError, \
+    ParameterError, UnprocessableParameterError, ResourceNotFoundError, ResourceConflictError
 from app.service.authentication_srv import verify_password as verify_pwd, verify_token as verify_tk
 from app import logger
 from app.util.resp import error
@@ -31,9 +32,9 @@ def verify_password(username, password):
     _username = username or data.get('username')
     _password = password or data.get('password')
     if not _username:
-        raise ParameterException(message='请提供用户名')
+        raise ParameterError(description='请提供用户名')
     if not _password:
-        raise ParameterException(message='请提供密码')
+        raise ParameterError(description='请提供密码')
     return verify_pwd(_username, _password)
 
 
@@ -79,39 +80,63 @@ def internal_server_error(e):
     return error(status=500, description=e.description, http_status=500)
 
 
-@app.errorhandler(ParameterException)
-def parameter_exception_handler(e):
+@app.errorhandler(ResourceNotFoundError)
+def resource_not_found_error_handler(e):
     logger.error(traceback.format_exc())
-    return error(status=e.status, description=e.message, http_status=400)
+    return error(status=constant.RESOURCE_NOT_FOUND, description=e.description,
+                 http_status=constant.RESOURCE_NOT_FOUND)
 
 
-@app.errorhandler(AuthenticationException)
-def authentication_exception_handler(e):
+@app.errorhandler(ResourceConflictError)
+def resource_conflict_error_handler(e):
     logger.error(traceback.format_exc())
-    return error(status=e.status, description=e.message, http_status=401)
+    return error(status=constant.RESOURCE_CONFLICT, description=e.description,
+                 http_status=constant.RESOURCE_CONFLICT)
 
 
-@app.errorhandler(AuthorizationException)
-def authorization_exception_handler(e):
+@app.errorhandler(ParameterError)
+def parameter_error_handler(e):
     logger.error(traceback.format_exc())
-    return error(status=constant.INVALID_TOKEN, description=e.message, http_status=constant.INVALID_TOKEN)
+    return error(status=constant.BAD_REQUEST, description=e.description,
+                 fields=e.fields if hasattr(list, 'fields') else None,
+                 http_status=constant.BAD_REQUEST)
 
 
-@app.errorhandler(BusinessException)
-def business_exception_handler(e):
+@app.errorhandler(UnprocessableParameterError)
+def unprocessable_parameter_handler(e):
     logger.error(traceback.format_exc())
-    return error(status=e.status, description=e.message)
+    return error(status=constant.INVALID_REQUEST, description=e.description,
+                 fields=e.fields if hasattr(list, 'fields') else None,
+                 http_status=constant.INVALID_REQUEST)
 
 
-@app.errorhandler(InternalException)
-def internal_exception_handler(e):
+@app.errorhandler(AuthenticationError)
+def authentication_error_handler(e):
     logger.error(traceback.format_exc())
-    return error(description=e.message or 'Internal Server Exception: %s' % str(e) or 'Unknown Exception.',
+    return error(status=constant.INVALID_TOKEN, description=e.description, http_status=constant.INVALID_TOKEN)
+
+
+@app.errorhandler(AuthorizationError)
+def authorization_error_handler(e):
+    logger.error(traceback.format_exc())
+    return error(status=constant.FORBIDDEN, description=e.description, http_status=constant.FORBIDDEN)
+
+
+@app.errorhandler(BusinessError)
+def business_error_handler(e):
+    logger.error(traceback.format_exc())
+    return error(status=constant.INTERNAL_ERROR, description=e.description, http_status=constant.INTERNAL_ERROR)
+
+
+@app.errorhandler(InternalError)
+def internal_error_handler(e):
+    logger.error(traceback.format_exc())
+    return error(description=e.description or 'Internal Server Error: %s' % str(e) or 'Unknown Error.',
                  http_status=constant.INTERNAL_ERROR)
 
 
 @app.errorhandler(Exception)
-def exception_handler(e):
+def error_handler(e):
     logger.error(traceback.format_exc())
     return error(description='Internal Server Error: %s' % str(e) or 'Unknown Error.',
                  http_status=constant.INTERNAL_ERROR)
