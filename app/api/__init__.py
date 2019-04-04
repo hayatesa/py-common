@@ -4,11 +4,12 @@ import traceback
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
 from flask import request
 from app import app, APPLICATION_CONFIG
-from app.util.resp import failure
-from app.exception import AuthenticationException, AuthorizationError, BusinessException, InternalException, \
+from app.exception import AuthenticationException, AuthorizationException, BusinessException, InternalException, \
     ParameterException
 from app.service.authentication_srv import verify_password as verify_pwd, verify_token as verify_tk
 from app import logger
+from app.util.resp import error
+from app import constant
 
 basic_auth = HTTPBasicAuth()
 token_auth = HTTPTokenAuth()
@@ -30,9 +31,9 @@ def verify_password(username, password):
     _username = username or data.get('username')
     _password = password or data.get('password')
     if not _username:
-        raise BusinessException(message='请提供用户名')
+        raise ParameterException(message='请提供用户名')
     if not _password:
-        raise BusinessException(message='请提供密码')
+        raise ParameterException(message='请提供密码')
     return verify_pwd(_username, _password)
 
 
@@ -43,72 +44,74 @@ def verify_token(token):
 
 # 全局异常处理
 @app.errorhandler(400)
-def bad_request(error):
+def bad_request(e):
     logger.error(traceback.format_exc())
-    return failure(message=error.description, http_status_code=error.code)
+    return error(status=400, description=e.description, http_status=400)
 
 
 @app.errorhandler(401)
-def unauthorized(error):
+def unauthorized(e):
     logger.error(traceback.format_exc())
-    return failure(message=error.description, http_status_code=error.code)
+    return error(status=401, description=e.description, http_status=401)
 
 
 @app.errorhandler(403)
-def forbidden(error):
+def forbidden(e):
     logger.error(traceback.format_exc())
-    return failure(message=error.description, http_status_code=error.code)
+    return error(status=403, description=e.description, http_status=403)
 
 
 @app.errorhandler(404)
-def not_found(error):
+def not_found(e):
     logger.error(traceback.format_exc())
-    return failure(message=error.description, http_status_code=error.code)
+    return error(status=404, description=e.description, http_status=404)
 
 
 @app.errorhandler(405)
-def method_not_allowed(error):
+def method_not_allowed(e):
     logger.error(traceback.format_exc())
-    return failure(message=error.description, http_status_code=error.code)
+    return error(status=405, description=e.description, http_status=405)
 
 
 @app.errorhandler(500)
-def internal_server_error(error):
+def internal_server_error(e):
     logger.error(traceback.format_exc())
-    return failure(message=error.description, http_status_code=error.code)
+    return error(status=500, description=e.description, http_status=500)
 
 
 @app.errorhandler(ParameterException)
-def business_exception_handler(e):
+def parameter_exception_handler(e):
     logger.error(traceback.format_exc())
-    return failure(status=e.status, message=e.message, http_status_code=400)
+    return error(status=e.status, description=e.message, http_status=400)
 
 
 @app.errorhandler(AuthenticationException)
 def authentication_exception_handler(e):
     logger.error(traceback.format_exc())
-    return failure(message=e.message, status=e.status, http_status_code=401)
+    return error(status=e.status, description=e.message, http_status=401)
 
 
-@app.errorhandler(AuthorizationError)
+@app.errorhandler(AuthorizationException)
 def authorization_exception_handler(e):
     logger.error(traceback.format_exc())
-    return failure(message=e.message, http_status_code=403)
+    return error(status=constant.INVALID_TOKEN, description=e.message, http_status=constant.INVALID_TOKEN)
 
 
 @app.errorhandler(BusinessException)
 def business_exception_handler(e):
     logger.error(traceback.format_exc())
-    return failure(status=e.status, message=e.message)
+    return error(status=e.status, description=e.message)
 
 
 @app.errorhandler(InternalException)
 def internal_exception_handler(e):
     logger.error(traceback.format_exc())
-    return failure(message=e.message or 'Internal Server Exception: %s' % str(e) or 'Unknown Exception.', http_status_code=500)
+    return error(description=e.message or 'Internal Server Exception: %s' % str(e) or 'Unknown Exception.',
+                 http_status=constant.INTERNAL_ERROR)
 
 
 @app.errorhandler(Exception)
 def exception_handler(e):
     logger.error(traceback.format_exc())
-    return failure(message='Internal Server Error: %s' % str(e) or 'Unknown Error.', http_status_code=500)
+    return error(description='Internal Server Error: %s' % str(e) or 'Unknown Error.',
+                 http_status=constant.INTERNAL_ERROR)

@@ -9,7 +9,7 @@ class AuthenticationException(Exception):
         self.status = status
 
 
-class AuthorizationError(Exception):
+class AuthorizationException(Exception):
 
     def __init__(self, message=''):
         self.message = message

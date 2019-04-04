@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-import traceback
 
 from flask import request
-
 from app import constant
 from app.exception import ParameterException
 from app.service import user_srv
@@ -30,11 +28,11 @@ def logout():
 
 @api.route('/verify', methods=['POST'])
 def verify():
-    try:
-        data = request.json
-    except Exception:
-        raise ParameterException(message='Parameter should not be blank.', status=constant.FAILURE_STATUS)
-    if not (data and data.get('token') and str.strip(data.get('token'))):
-        raise ParameterException(message='Parameter \'token\' should not be blank.', status=constant.BLANK_TOKEN)
-    authentication_srv.verify_token(data['token'])
-    return success()
+    # try:
+    #     data = request.json
+    # except Exception:
+    #     raise ParameterException(message='Parameter should not be blank.', status=constant.BAD_REQUEST)
+    # if not (data and data.get('token') and str.strip(data.get('token'))):
+    #     raise ParameterException(message='Parameter \'token\' should not be blank.', status=constant.BAD_REQUEST)
+    # authentication_srv.verify_token(data['token'])
+    return success(data={'a': 'aa', 'b': 'bb'})

@@ -1,9 +1,16 @@
 # -*- coding: utf-8 -*-
 """全局常量"""
-SUCCESS_STATUS = 0  # 成功状态码
-FAILURE_STATUS = 1  # 失败状态码
-BLANK_TOKEN = 2  # 令牌缺失
-EXPIRED_TOKEN = 3  # 过期Token
-INVALID_TOKEN = 4  # 无效Token
-BE_LOGGED_OUT = 5  # 被登出
-LOGIN_ON_OTHER_DEVICE = 6  # 在其它设备登录
+# 数据错误
+BAD_REQUEST = 400  # 请求信息不完整或无法解析。
+INVALID_REQUEST = 422  # 请求信息完整，但无效。
+NOT_FOUND = 404  # 资源不存在。
+RESOURCE_CONFLICT = 409  # 资源冲突。
+
+# 鉴权错误
+INVALID_TOKEN = 401  # 访问令牌没有提供，或者无效。
+FORBIDDEN = 403  # 访问令牌有效，但没有权限。
+
+# 标准状态
+INTERNAL_ERROR = 500  # 服务器内部抛出错误。
+
+SUCCESS_MESSAGE = 'OK'

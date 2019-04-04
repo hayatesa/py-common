@@ -8,27 +8,66 @@ DEFAULT_MESSAGE = ''
 
 class Resp:
 
-    def __init__(self, status=0, message=DEFAULT_MESSAGE, data=None):
-        self.status = status
-        self.message = message
-        self.data = data
+    def __init__(self):
+        pass
+
+    @classmethod
+    def success(cls, message=constant.SUCCESS_MESSAGE, data=None):
+        """请求成功结果
+
+        :param message: 消息
+        :param data: 数据
+        """
+        resp = cls()
+        resp.message = message
+        resp.data = data
+        return resp
+
+    @classmethod
+    def error(cls, status=constant.INTERNAL_ERROR, code=None, description=None, fields=None):
+        """请求失败结果
+
+        :param status: 错误状态码
+        :param code: 错误代码，建议使用下划线分隔的全部字母为大写的英文
+        :param description: 用户可读的错误消息
+        :param fields: 字段描述，通常用于描述请求参数的错误
+        """
+        resp = cls()
+        _error = cls()
+        _error.status = status
+        if code:
+            _error.code = code
+        if description:
+            _error.description = description
+        if fields:
+            _error.fields = fields
+        resp.error = _error
+        return resp
 
     def to_json(self):
         return to_json(self)
 
 
-def mk_resp(status=constant.SUCCESS_STATUS, message=DEFAULT_MESSAGE, data=None, http_status_code=200):
-    resp = Response(Resp(status, message, data).to_json(), mimetype=MIME_TYPE)
-    resp.status_code = http_status_code
-    return resp
+def success(message=constant.SUCCESS_MESSAGE, data=None):
+    """请求成功结果
+
+    :param message: 消息
+    :param data: 数据
+    """
+    return Response(Resp.success(message=message, data=data).to_json(), mimetype=MIME_TYPE)
 
 
-def success(message=DEFAULT_MESSAGE, data=None):
-    resp = Response(Resp(constant.SUCCESS_STATUS, message, data).to_json(), mimetype=MIME_TYPE)
-    return resp
+def error(status=None, code=constant.INTERNAL_ERROR, description=None, fields=None,
+          http_status=constant.INTERNAL_ERROR):
+    """请求失败结果
 
-
-def failure(status=constant.FAILURE_STATUS, message=DEFAULT_MESSAGE, data=None, http_status_code=200):
-    resp = Response(Resp(status, message, data).to_json(), mimetype=MIME_TYPE)
-    resp.status_code = http_status_code
+    :param status: 错误状态码
+    :param code: 错误代码，建议使用下划线分隔的全部字母为大写的英文
+    :param description: 用户可读的错误消息
+    :param fields: 字段描述，通常用于描述请求参数的错误
+    :param http_status: http状态码
+    """
+    resp = Response(Resp.error(status=status, code=code, description=description, fields=fields).to_json(),
+                    mimetype=MIME_TYPE)
+    resp.status_code = http_status
     return resp
