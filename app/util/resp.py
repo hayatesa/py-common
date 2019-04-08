@@ -54,8 +54,7 @@ def success(message=constant.SUCCESS_MESSAGE, data=None):
     return Response(Resp.success(message=message, data=data).to_json(), mimetype=MIME_TYPE)
 
 
-def error(status=None, description=None, fields=None,
-          http_status=constant.INTERNAL_ERROR):
+def error(status=None, description=None, fields=None, http_status=None):
     """请求失败结果
 
     :param status: 错误状态码
@@ -64,5 +63,6 @@ def error(status=None, description=None, fields=None,
     :param http_status: http状态码
     """
     resp = Response(Resp.error(status=status, description=description, fields=fields).to_json(), mimetype=MIME_TYPE)
-    resp.status_code = http_status
+    if http_status:
+        resp.status_code = http_status
     return resp
