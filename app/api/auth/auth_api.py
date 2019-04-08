@@ -2,7 +2,7 @@
 
 from flask import request
 from app import constant
-from app.exception import ParameterError
+from app.exception import ParameterInvalidError
 from app.service import user_srv
 from app.service import authentication_srv
 from app.util.resp import success
@@ -31,8 +31,8 @@ def verify():
     try:
         data = request.json
     except Exception:
-        raise ParameterError(description='请求参数缺失')
+        raise ParameterInvalidError(description='请求参数缺失')
     if not (data and data.get('token') and str.strip(data.get('token'))):
-        raise ParameterError(description='令牌缺失', fields={'token': 'Field \'token\' should not be blank.'})
+        raise ParameterInvalidError(description='令牌缺失', fields={'token': 'Field \'token\' should not be blank.'})
     authentication_srv.verify_token(data['token'])
     return success()

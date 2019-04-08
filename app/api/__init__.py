@@ -5,7 +5,7 @@ import traceback
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
 from flask import request
 from app import app, APPLICATION_CONFIG
-from app.exception import AuthenticationError, AuthorizationError, BusinessError, ServiceError, ParameterError
+from app.exception import AuthenticationError, AuthorizationError, ServiceError, ParameterInvalidError
 from app.service.authentication_srv import verify_password as verify_pwd, verify_token as verify_tk
 from app import logger
 from app.util.resp import error
@@ -31,9 +31,9 @@ def verify_password(username, password):
     _username = username or data.get('username')
     _password = password or data.get('password')
     if not _username:
-        raise ParameterError(description='请提供用户名')
+        raise ParameterInvalidError(description='请提供用户名')
     if not _password:
-        raise ParameterError(description='请提供密码')
+        raise ParameterInvalidError(description='请提供密码')
     return verify_pwd(_username, _password)
 
 
@@ -79,35 +79,29 @@ def internal_server_error(e):
     return error(status=500, description=e.description, http_status=500)
 
 
-@app.errorhandler(ParameterError)
+@app.errorhandler(ParameterInvalidError)
 def parameter_error_handler(e):
     logger.error(traceback.format_exc())
     return error(status=constant.BAD_REQUEST, description=e.description,
-                 fields=e.fields if hasattr(list, 'fields') else None)
+                 fields=e.fields if hasattr(list, 'fields') else None, http_status=400)
 
 
 @app.errorhandler(AuthenticationError)
 def authentication_error_handler(e):
     logger.error(traceback.format_exc())
-    return error(status=constant.INVALID_TOKEN, description=e.description)
+    return error(status=constant.INVALID_TOKEN, description=e.description, http_status=401)
 
 
 @app.errorhandler(AuthorizationError)
 def authorization_error_handler(e):
     logger.error(traceback.format_exc())
-    return error(status=constant.FORBIDDEN, description=e.description)
-
-
-@app.errorhandler(BusinessError)
-def business_error_handler(e):
-    logger.error(traceback.format_exc())
-    return error(status=constant.INTERNAL_ERROR, description=e.description)
+    return error(status=constant.FORBIDDEN, description=e.description, http_status=403)
 
 
 @app.errorhandler(ServiceError)
-def internal_error_handler(e):
+def service_error_handler(e):
     logger.error(traceback.format_exc())
-    return error(description=e.description or 'Internal Server Error: %s' % str(e) or 'Unknown Error.')
+    return error(status=constant.SERVICE_ERROR, description=e.description, http_status=200)
 
 
 @app.errorhandler(Exception)

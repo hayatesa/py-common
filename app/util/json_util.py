@@ -5,8 +5,8 @@ import json
 from sqlalchemy.ext.declarative import DeclarativeMeta
 
 DATE_TIME_FORMAT = '%Y-%m-%d %H:%M:%S'
-EXCLUDE_FIELDS = ['metadata', 'query', 'query_class']
-EXCLUDE_ALCHEMY_FIELDS = []
+EXCLUDE_FIELDS = []
+EXCLUDE_ALCHEMY_FIELDS = ['metadata', 'query', 'query_class']
 
 
 class AlchemyEncoder(json.JSONEncoder):
@@ -14,7 +14,7 @@ class AlchemyEncoder(json.JSONEncoder):
 
         exclude = EXCLUDE_FIELDS  # exclude fields
         if isinstance(obj.__class__, DeclarativeMeta):
-            exclude.append(EXCLUDE_ALCHEMY_FIELDS)
+            exclude.extend(EXCLUDE_ALCHEMY_FIELDS)
         dict_obj = {}
         for field in [x for x in dir(obj) if not x.startswith('_') and x not in exclude]:
             data = obj.__getattribute__(field)
