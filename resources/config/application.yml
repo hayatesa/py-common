@@ -68,7 +68,8 @@ log: # See https://docs.python.org/3/library/logging.config.html
 
 redis:
   active: true
-
+  host: 119.29.94.246
+  port: 6379
   decode_responses: true # 解码为字符串
   password: redis272243
 session:

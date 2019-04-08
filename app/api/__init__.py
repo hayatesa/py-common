@@ -5,7 +5,7 @@ import traceback
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
 from flask import request
 from app import app, APPLICATION_CONFIG
-from app.exception import AuthenticationError, AuthorizationError, ServiceError, ParameterInvalidError
+from app.exception import AuthenticationError, AuthorizationError, ServiceError, ParameterInvalidError, InternalError
 from app.service.authentication_srv import verify_password as verify_pwd, verify_token as verify_tk
 from app import logger
 from app.util.resp import error
@@ -102,6 +102,12 @@ def authorization_error_handler(e):
 def service_error_handler(e):
     logger.error(traceback.format_exc())
     return error(status=constant.SERVICE_ERROR, description=e.description, http_status=200)
+
+
+@app.errorhandler(InternalError)
+def internal_error_handler(e):
+    logger.error(traceback.format_exc())
+    return error(description=e.description, http_status=constant.INTERNAL_ERROR)
 
 
 @app.errorhandler(Exception)
