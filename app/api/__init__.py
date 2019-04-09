@@ -11,11 +11,11 @@ from app import logger
 from app.util.resp import error
 from app import constant
 
-basic_auth = HTTPBasicAuth()
-token_auth = HTTPTokenAuth()
-
 context_path = APPLICATION_CONFIG['server'].get('context_path', '')
 version = APPLICATION_CONFIG.get('version')
+
+basic_auth = HTTPBasicAuth()
+token_auth = HTTPTokenAuth()
 
 
 # 登录认证
@@ -39,7 +39,8 @@ def verify_password(username, password):
 
 @token_auth.verify_token
 def verify_token(token):
-    return verify_tk(token)
+    token_prefix = APPLICATION_CONFIG['jwt'].get('token_prefix')
+    return verify_tk('%s %s' % (token_prefix, token))
 
 
 # 全局异常处理

@@ -2,7 +2,6 @@
 import datetime
 
 from werkzeug.security import check_password_hash
-
 from app.exception import ParameterInvalidError, ServiceError, AuthenticationError
 from app.util import jwt_util
 from app.util.redis_session import Session
@@ -44,6 +43,33 @@ def verify_token(token):
         ParameterError: 令牌为空。
         AuthenticationError: 令牌解析失败或令牌过期。
     """
+    check_token(token)
+    return True
+
+
+def refresh_token(token):
+    """使用未过期的Token换取新Token。
+
+    Args:
+        token: 令牌(字符串)。
+    Returns:
+        新Token。
+    Raises:
+        ParameterError: 令牌为空。
+        AuthenticationError: 令牌解析失败或令牌过期。
+    """
+    user_id = check_token(token)
+    new_token = jwt_util.encode_auth_token(user_id)
+    Session(user_id).update(new_token)
+    return new_token
+
+
+def check_token(token):
+    """检查Token
+
+    :param token: 令牌
+    :return: 用户id
+    """
     _token = str.strip(token)
     if not _token:
         raise ParameterInvalidError(description='令牌缺失', fields={'token': 'Field "token" should not be blank.'})
@@ -59,30 +85,4 @@ def verify_token(token):
     # Token与Session中的Token不一致
     if not _token == token_in_session:
         raise AuthenticationError(description='账号已被其它设备登出，请重新登录')
-    return True
-
-
-def refresh_token(token):
-    """使用未过期的Token换取新Token。
-
-    Args:
-        token: 令牌(字符串)。
-    Returns:
-        新Token。
-    Raises:
-        ParameterError: 令牌为空。
-        AuthenticationError: 令牌解析失败或令牌过期。
-    """
-    _token = str.strip(token)
-    if not _token:
-        raise ParameterInvalidError(description='令牌缺失', fields={'token': 'Field "token" should not be blank.'})
-    try:
-        payload = jwt_util.decode_auth_token(_token)
-    except ServiceError as e:
-        raise AuthenticationError(description=e.description)
-    if jwt_util.is_token_expired(payload['exp']):
-        raise AuthenticationError(description='令牌过期')
-    user = payload['data']['id']
-    new_token = jwt_util.encode_auth_token(user['id'])
-    Session(user['id']).update(new_token)
-    return new_token
+    return payload['data']['id']
