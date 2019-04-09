@@ -113,5 +113,5 @@ def internal_error_handler(e):
 @app.errorhandler(Exception)
 def error_handler(e):
     logger.error(traceback.format_exc())
-    return error(description='Internal Server Error: %s' % str(e) or 'Unknown Error.',
+    return error(status=constant.INTERNAL_ERROR, description='Internal Server Error.',
                  http_status=constant.INTERNAL_ERROR)

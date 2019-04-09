@@ -1,24 +1,28 @@
 # -*- coding: utf-8 -*-
 from app import APPLICATION_CONFIG
+from app.util.redis_util import client
+
+PREFIX = APPLICATION_CONFIG['session'].get('key_prefix', '')
+EXPIRE = APPLICATION_CONFIG['session'].get('expire', 1800)
 
 
-class SessionKey:
+class Session:
 
-    def __init__(self):
-        pass
+    def __init__(self, key, value=None):
+        self.key = key
+        self.value = value
 
+    def get_key(self):
+        return PREFIX + self.key
 
-def create_session():
-    pass
+    def create(self):
+        client.setex(self.get_key(), EXPIRE, self.value)
 
+    def read(self):
+        return client.get(self.get_key())
 
-def read_session():
-    pass
+    def update(self, value):
+        client.setex(self.get_key(), EXPIRE, value)
 
-
-def update_session():
-    pass
-
-
-def delete_session():
-    pass
+    def delete(self):
+        client.delete(self.get_key())

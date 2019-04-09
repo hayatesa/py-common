@@ -74,5 +74,5 @@ redis:
   decode_responses: true # 解码为字符串
   password: redis272243
 session:
-  key_prefix: 'jwt_token'
-  expire: 50000 # 单位秒
+  key_prefix: 'session.'
+  expire: 86400 # 单位秒

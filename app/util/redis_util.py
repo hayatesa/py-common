@@ -33,7 +33,7 @@ class RedisUtil:
         self.client = redis.Redis(connection_pool=pool)
 
     def get_redis(self):
-        return self.client
+        return self.client if hasattr(self, 'client') else None
 
     def publish(self, channel, description):
         if not channel:
@@ -50,4 +50,5 @@ class RedisUtil:
 
 
 redis_util = RedisUtil()
+client = redis_util.get_redis()
 del RedisUtil

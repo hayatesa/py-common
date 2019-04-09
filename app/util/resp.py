@@ -20,7 +20,8 @@ class Resp:
         """
         resp = cls()
         resp.message = message
-        resp.data = data
+        if data:
+            resp.data = data
         return resp
 
     @classmethod

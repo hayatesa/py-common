@@ -15,7 +15,7 @@ TOKEN_PREFIX = '%s ' % _PREFIX if _PREFIX else ''
 ISS = '%s ' % APPLICATION_CONFIG['jwt'].get('iss', '')
 
 
-def encode_auth_token(user_id, username):
+def encode_auth_token(user_id):
     """
     生成认证Token
     :return: token string
@@ -26,7 +26,6 @@ def encode_auth_token(user_id, username):
         'iss': ISS,
         'data': {
             'id': user_id,
-            'username': username
         }
     }
     return TOKEN_PREFIX + jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM).decode('utf-8')
