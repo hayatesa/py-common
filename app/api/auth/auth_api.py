@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from flask import request
-from app import constant
 from app.exception import ParameterInvalidError
 from app.service import user_srv
 from app.service import authentication_srv
@@ -33,6 +32,6 @@ def verify():
     except Exception:
         raise ParameterInvalidError(description='请求参数缺失')
     if not (data and data.get('token') and str.strip(data.get('token'))):
-        raise ParameterInvalidError(description='令牌缺失', fields={'token': 'Field \'token\' should not be blank.'})
+        raise ParameterInvalidError(description='令牌缺失', fields={'token': 'Field "token" should not be blank.'})
     authentication_srv.verify_token(data['token'])
     return success()

@@ -42,7 +42,7 @@ def verify_token(token):
     """
     _token = str.strip(token)
     if not _token:
-        raise ParameterInvalidError(description='令牌缺失', fields={'token': 'Field \'token\' should not be blank.'})
+        raise ParameterInvalidError(description='令牌缺失', fields={'token': 'Field "token" should not be blank.'})
     try:
         payload = jwt_util.decode_auth_token(_token)
     except ServiceError as e:

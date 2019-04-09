@@ -49,6 +49,7 @@ log: # See https://docs.python.org/3/library/logging.config.html
       maxBytes: 1048576
       backupCount: 3
       level: 10
+      encoding: utf-8
   formatters:
     brief:
       format: '%(asctime)s %(levelname)s %(filename)s[%(lineno)d] %(funcName)s: %(message)s'

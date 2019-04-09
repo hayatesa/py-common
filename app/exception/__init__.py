@@ -53,7 +53,7 @@ class AuthorizationError(ServiceError):
 class ParameterInvalidError(ServiceError):
     """参数异常"""
 
-    def __init__(self, description=None, fields=None):
+    def __init__(self, description=None, **fields):
         self.status = constant.BAD_REQUEST
         if description:
             self.description = description
@@ -67,5 +67,6 @@ class ParameterInvalidError(ServiceError):
           {'username': 'Field username should not be blank.', 'password': 'Length of password should be longer than 8.'}
         :return: self
         """
-        dict(self.fields, **fields)
+        self.fields = self.fields if hasattr(self, 'fields') else {}
+        self.fields = dict(self.fields, **fields)
         return self

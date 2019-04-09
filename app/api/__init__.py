@@ -31,9 +31,9 @@ def verify_password(username, password):
     _username = username or data.get('username')
     _password = password or data.get('password')
     if not _username:
-        raise ParameterInvalidError(description='请提供用户名')
+        raise ParameterInvalidError(description='"username" should not be blank.', username='Should not be blank.')
     if not _password:
-        raise ParameterInvalidError(description='请提供密码')
+        raise ParameterInvalidError(description='"password" should not be blank.', password='Should not be blank.')
     return verify_pwd(_username, _password)
 
 
@@ -83,7 +83,7 @@ def internal_server_error(e):
 def parameter_error_handler(e):
     logger.error(traceback.format_exc())
     return error(status=constant.BAD_REQUEST, description=e.description,
-                 fields=e.fields if hasattr(list, 'fields') else None, http_status=400)
+                 fields=e.fields if hasattr(e, 'fields') else None, http_status=400)
 
 
 @app.errorhandler(AuthenticationError)
