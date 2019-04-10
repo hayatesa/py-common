@@ -17,12 +17,15 @@ class Session:
 
     def create(self):
         client.setex(self.get_key(), EXPIRE, self.value)
+        return self
 
     def read(self):
         return client.get(self.get_key())
 
     def update(self, value):
         client.setex(self.get_key(), EXPIRE, value)
+        return self
 
     def delete(self):
         client.delete(self.get_key())
+        return self

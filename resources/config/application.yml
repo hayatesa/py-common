@@ -2,7 +2,7 @@ version: &version 1.0.0.0330_base
 profile: local
 server:
   static_folder: templates
-  context_path: /api
+  context_path: /api  # 上下文路径
   cors:
     allow: true
     origins: '*'
@@ -12,7 +12,7 @@ sqlalchemy:
   SQLALCHEMY_TRACK_MODIFICATIONS: true
   SQLALCHEMY_ECHO: true
 jwt:
-  header_key: Authorization
+  header_key: Authorization  # Token在请求头中的键
   secret_key: ft@4&iP!_  # Token密钥
   ttl: 86400  # Token有效期(单位: 秒)
   algorithm: HS256  # Token加密算法
@@ -71,8 +71,8 @@ redis:
   active: true
   host: 119.29.94.246
   port: 6379
-  decode_responses: true # 解码为字符串
+  decode_responses: true  # 解码为字符串
   password: redis272243
 session:
-  key_prefix: 'session.'
-  expire: 86400 # 单位秒
+  key_prefix: 'session.'  # Session中键的前缀
+  expire: 86400  # 单位秒

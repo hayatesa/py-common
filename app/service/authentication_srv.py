@@ -21,6 +21,14 @@ def login(username):
     return token
 
 
+def logout(token):
+    """注销登录
+
+    :param token: 口令
+    """
+    Session(analyse_token(token)).delete()
+
+
 def verify_password(username, password):
     user_info = user_srv.find_by_username(username)
     if not user_info:
@@ -43,7 +51,7 @@ def verify_token(token):
         ParameterError: 令牌为空。
         AuthenticationError: 令牌解析失败或令牌过期。
     """
-    check_token(token)
+    analyse_token(token)
     return True
 
 
@@ -58,14 +66,14 @@ def refresh_token(token):
         ParameterError: 令牌为空。
         AuthenticationError: 令牌解析失败或令牌过期。
     """
-    user_id = check_token(token)
+    user_id = analyse_token(token)
     new_token = jwt_util.encode_auth_token(user_id)
     Session(user_id).update(new_token)
     return new_token
 
 
-def check_token(token):
-    """检查Token
+def analyse_token(token):
+    """分析Token
 
     :param token: 令牌
     :return: 用户id
