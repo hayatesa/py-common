@@ -23,6 +23,34 @@ CONFIG_FILE_PATH = os.path.join(RESOURCES_PATH, '%s/%s%s' % (CONF_FILE_INFO['pat
 BANNER_PATH = os.path.join(RESOURCES_PATH, 'banner.txt')  # banner路径
 
 
+def read_dict(dict_obj=None, key=None, default=None, splitter='.'):
+    """根据 key 获取 dict 中的 value
+
+    :param dict_obj: dict对象
+    :param key: 使用分隔符连接的key字符串，如'log.handlers.console.level'
+    :param default: 默认值
+    :param splitter: key分隔符，默认为'.'
+    :return: 如果值存在，返回该值，否则返回default值
+    """
+    k = key.strip()
+    if not k or not isinstance(dict_obj, dict):
+        return default
+    segments = k.split(splitter)
+    if not segments:
+        return default
+
+    # 递归访问dict
+    def visit(_dict_obj, _segments):
+        if not isinstance(_dict_obj, dict):
+            return None
+        if len(_segments) == 1:
+            return _dict_obj.get(_segments[0])
+        return visit(_dict_obj.get(_segments[0]), _segments[1:])
+
+    result = visit(dict_obj, segments)
+    return default if isinstance(result, type(None)) else result
+
+
 def _load_config():
     app_config = {}
     _logger = logging.getLogger()
@@ -86,15 +114,15 @@ def _create_db(flask_app):
 def _create_app__():
     flask_app = Flask(__name__, static_folder=os.path.join(
         CONTEXT_PATH,
-        APPLICATION_CONFIG['server'].get('static_folder', 'templates')
+        read_dict(APPLICATION_CONFIG, 'server.static_folder', 'templates')
     ))
     flask_app.config.from_mapping(APPLICATION_CONFIG.get('sqlalchemy', {}))
-    __init_cors__(flask_app)
+    _init_cors(flask_app)
     return flask_app
 
 
-def __init_cors__(flask_app):
-    cors = APPLICATION_CONFIG.get('server').get('cors')
+def _init_cors(flask_app):
+    cors = read_dict(APPLICATION_CONFIG, 'server.cors')
     supports_credentials = cors.get('allow') is True
     origins = (cors.get('origins') if cors.get('origins') else '*') if supports_credentials else ''
     path = (cors.get('path') if cors.get('path') else '/*') if supports_credentials else ''

@@ -9,10 +9,10 @@ from app.exception import AuthenticationError, AuthorizationError, ServiceError,
 from app.service.authentication_srv import verify_password as verify_pwd, verify_token as verify_tk
 from app import logger
 from app.util.resp import error
+from app.util.dict_util import read
 from app import constant
 
-context_path = APPLICATION_CONFIG['server'].get('context_path', '')
-version = APPLICATION_CONFIG.get('version')
+context_path = read(APPLICATION_CONFIG, 'server.context_path', '')
 
 basic_auth = HTTPBasicAuth()
 token_auth = HTTPTokenAuth()
@@ -39,8 +39,8 @@ def verify_password(username, password):
 
 @token_auth.verify_token
 def verify_token(token):
-    token_prefix = APPLICATION_CONFIG['jwt'].get('token_prefix')
-    return verify_tk('%s %s' % (token_prefix, token))
+    token_prefix = read(APPLICATION_CONFIG, 'jwt.token_prefix')
+    return verify_tk('%s%s' % (token_prefix, token))
 
 
 # 全局异常处理
@@ -108,7 +108,7 @@ def service_error_handler(e):
 @app.errorhandler(InternalError)
 def internal_error_handler(e):
     logger.error(traceback.format_exc())
-    return error(description=e.description, http_status=constant.INTERNAL_ERROR)
+    return error(description='Internal Server Error.', http_status=constant.INTERNAL_ERROR)
 
 
 @app.errorhandler(Exception)
