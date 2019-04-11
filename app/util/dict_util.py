@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 def read(dict_obj=None, key=None, default=None, splitter='.'):
     """根据 key 获取 dict 中的 value
 

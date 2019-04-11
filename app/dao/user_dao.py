@@ -6,7 +6,7 @@ from app.dao.base_dao import BaseDao
 class UserDao(BaseDao):
 
     def __init__(self):
-        super().__init__(User)
+        super(UserDao, self).__init__(User)
 
     def find_by_username(self, username):
         return User.query.filter(User.username == username, User.isDeleted == False).all()

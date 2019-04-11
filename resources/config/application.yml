@@ -2,7 +2,7 @@ version: &version 1.0.0.0330_base
 profile: local
 server:
   static_folder: templates
-  context_path: /api  # 上下文路径
+  context_path: /auth  # 上下文路径
   cors:
     allow: true
     origins: '*'
