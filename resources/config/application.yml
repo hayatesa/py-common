@@ -2,11 +2,11 @@ version: &version 1.0.0.0330_base
 profile: local
 server:
   static_folder: templates
-  context_path: /auth  # 上下文路径
+  context_path: /v1  # 上下文路径
   cors:
     allow: true
     origins: '*'
-    path: /api/*
+    path: /*
 sqlalchemy:
   SQLALCHEMY_DATABASE_URI: mysql://dev:dev@119.29.94.246:3306/zone_cloud?charset=utf8
   SQLALCHEMY_TRACK_MODIFICATIONS: true
