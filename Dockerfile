@@ -1,11 +1,11 @@
 FROM python:latest
+FROM redis
 
 WORKDIR /app/auth
-
 copy . /app/auth
-
 RUN pip install --trusted-host mirrors.aliyun.com --index-url https://mirrors.aliyun.com/pypi/simple/ -r requirements.txt
 
-EXPOSE 5001
+COPY redis.conf /usr/local/etc/redis/redis.conf
 
 CMD ["python", "/app/auth/run.py"]
+CMD [ "redis-server", "/usr/local/etc/redis/redis.conf" ]

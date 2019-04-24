@@ -72,7 +72,7 @@ redis:
   host: 119.29.94.246
   port: 6379
   decode_responses: true  # 解码为字符串
-  password: redis272243
+  password: redis.5243
 session:
   key_prefix: 'session.'  # Session中键的前缀
   expire: 86400  # 单位秒
