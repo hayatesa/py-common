@@ -1,5 +1,5 @@
 version: &version 1.0.0.0330_base
-profile: local
+# profile: local
 server:
   static_folder: templates
   context_path: /v1  # 上下文路径
