@@ -1,6 +1,8 @@
-FROM redis:latest
+FROM mysql:latest
 
-WORKDIR /opt/py-common/mysql
+WORKDIR /py-common/mysql
 
-copy . /opt/py-common/mysql
+copy . /py-common/mysql
+
+RUN mysql -uroot -p123456 -Dtest</py-common/mysql/db.sql
 
