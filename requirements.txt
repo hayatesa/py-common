@@ -12,7 +12,7 @@ pip==19.0.3
 pyMySql==0.9.3
 PyJWT==1.7.1
 python-dotenv==0.10.1
-PyYAML==5.1b3
+PyYAML==5.4
 setuptools==40.8.0
 six==1.12.0
 Werkzeug==0.14.1
